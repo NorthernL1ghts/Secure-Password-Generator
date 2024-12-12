@@ -6,38 +6,52 @@ class Window:
     def __init__(self, root):
         self.m_Root = root
         self.m_Root.title("Secure Password Generator")
-        self.m_Root.geometry("600x450")  # Set the window size to be wider
+        self.m_Root.geometry("700x600")  # Set the window size to be wider and taller
 
         self.CreateWidgets()
 
     def CreateWidgets(self):
-        # Create and place widgets
-        tk.Label(self.m_Root, text="Password Length (12-25):").grid(row=0, column=0, padx=10, pady=5)
-        self.m_EntryLength = tk.Entry(self.m_Root)
-        self.m_EntryLength.grid(row=0, column=1, padx=10, pady=5)
+        # Define font
+        title_font = ("Cascadia Code", 16, "bold")
+        label_font = ("Cascadia Code", 10, "bold")
+        button_font = ("Cascadia Code", 10, "bold")
 
-        tk.Label(self.m_Root, text="Number of Passwords:").grid(row=1, column=0, padx=10, pady=5)
-        self.m_EntryCount = tk.Entry(self.m_Root)
-        self.m_EntryCount.grid(row=1, column=1, padx=10, pady=5)
+        # Create and place widgets
+        frame = tk.Frame(self.m_Root, padx=20, pady=20)
+        frame.pack(expand=True, fill=tk.BOTH)
+
+        title_label = tk.Label(frame, text="Secure Password Generator", font=title_font)
+        title_label.grid(row=0, column=0, columnspan=2, pady=10)
+
+        tk.Label(frame, text="Password Length (12-25):", font=label_font).grid(row=1, column=0, sticky=tk.W, pady=5)
+        self.m_EntryLength = tk.Entry(frame, font=label_font)
+        self.m_EntryLength.grid(row=1, column=1, pady=5)
+
+        tk.Label(frame, text="Number of Passwords:", font=label_font).grid(row=2, column=0, sticky=tk.W, pady=5)
+        self.m_EntryCount = tk.Entry(frame, font=label_font)
+        self.m_EntryCount.grid(row=2, column=1, pady=5)
 
         self.m_VarIncludeSpecial = tk.BooleanVar(value=True)
-        tk.Checkbutton(self.m_Root, text="Include Special Characters", variable=self.m_VarIncludeSpecial).grid(row=2, column=0, columnspan=2, padx=10, pady=5)
+        tk.Checkbutton(frame, text="Include Special Characters", variable=self.m_VarIncludeSpecial, font=label_font).grid(row=3, column=0, columnspan=2, pady=5)
 
         self.m_VarExcludeSimilar = tk.BooleanVar(value=True)
-        tk.Checkbutton(self.m_Root, text="Exclude Similar-looking Characters", variable=self.m_VarExcludeSimilar).grid(row=3, column=0, columnspan=2, padx=10, pady=5)
+        tk.Checkbutton(frame, text="Exclude Similar-looking Characters", variable=self.m_VarExcludeSimilar, font=label_font).grid(row=4, column=0, columnspan=2, pady=5)
 
-        tk.Label(self.m_Root, text="Specific Characters to Include (leave blank if none):").grid(row=4, column=0, padx=10, pady=5)
-        self.m_EntryIncludeChars = tk.Entry(self.m_Root)
-        self.m_EntryIncludeChars.grid(row=4, column=1, padx=10, pady=5)
+        tk.Label(frame, text="Specific Characters to Include (leave blank if none):", font=label_font).grid(row=5, column=0, sticky=tk.W, pady=5)
+        self.m_EntryIncludeChars = tk.Entry(frame, font=label_font)
+        self.m_EntryIncludeChars.grid(row=5, column=1, pady=5)
 
-        tk.Label(self.m_Root, text="Specific Characters to Exclude (leave blank if none):").grid(row=5, column=0, padx=10, pady=5)
-        self.m_EntryExcludeChars = tk.Entry(self.m_Root)
-        self.m_EntryExcludeChars.grid(row=5, column=1, padx=10, pady=5)
+        tk.Label(frame, text="Specific Characters to Exclude (leave blank if none):", font=label_font).grid(row=6, column=0, sticky=tk.W, pady=5)
+        self.m_EntryExcludeChars = tk.Entry(frame, font=label_font)
+        self.m_EntryExcludeChars.grid(row=6, column=1, pady=5)
 
-        tk.Button(self.m_Root, text="Generate Passwords", command=self.GeneratePasswords).grid(row=6, column=0, columnspan=2, padx=10, pady=10)
+        generate_button = tk.Button(frame, text="Generate Passwords", command=self.GeneratePasswords, padx=10, pady=5, bg="#4CAF50", fg="white", font=button_font)
+        generate_button.grid(row=7, column=0, columnspan=2, pady=15)
 
-        self.m_TextArea = scrolledtext.ScrolledText(self.m_Root, width=60, height=20)
-        self.m_TextArea.grid(row=7, column=0, columnspan=2, padx=10, pady=10)
+        tk.Label(frame, text="Output:", font=("Cascadia Code", 12, "bold")).grid(row=8, column=0, columnspan=2, pady=5)
+
+        self.m_TextArea = scrolledtext.ScrolledText(frame, width=70, height=20, font=("Cascadia Code", 10))
+        self.m_TextArea.grid(row=9, column=0, columnspan=2, pady=10)
 
     def GeneratePasswords(self):
         try:
