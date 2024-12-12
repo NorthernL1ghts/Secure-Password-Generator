@@ -14,3 +14,5 @@ build/
 
 # Ignore logs
 *.log
+
+out/
