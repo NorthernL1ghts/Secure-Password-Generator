@@ -6,13 +6,15 @@ import time
 from secrets import SystemRandom
 
 class SecurePasswordGenerator:
-    def __init__(self, length=16, min_uppercase=1, min_lowercase=1, min_digits=1, min_special=1, exclude_similar_chars=True):
+    def __init__(self, length=16, min_uppercase=1, min_lowercase=1, min_digits=1, min_special=1, exclude_similar_chars=True, include_chars="", exclude_chars=""):
         self.m_Length = length
         self.m_MinUppercase = min_uppercase
         self.m_MinLowercase = min_lowercase
         self.m_MinDigits = min_digits
         self.m_MinSpecial = min_special
         self.b_ExcludeSimilarChars = exclude_similar_chars
+        self.m_IncludeChars = include_chars
+        self.m_ExcludeChars = exclude_chars
         self.m_SecureRandom = SystemRandom()
 
     def GeneratePassword(self):
@@ -32,6 +34,10 @@ class SecurePasswordGenerator:
         char_set = letters_upper + letters_lower + digits + special_chars
         if self.b_ExcludeSimilarChars:
             char_set = ''.join(char for char in char_set if char not in similar_chars)
+        if self.m_IncludeChars:
+            char_set += self.m_IncludeChars
+        if self.m_ExcludeChars:
+            char_set = ''.join(char for char in char_set if char not in self.m_ExcludeChars)
 
         # Ensure minimum counts of each character type
         password = (
@@ -86,7 +92,7 @@ class EntryPoint:
     def Run():
         """Run the password generator."""
         try:
-            generator = SecurePasswordGenerator(length=16)
+            generator = SecurePasswordGenerator(length=16, include_chars="!@#", exclude_chars="abc")
             generator.GenerateMultiplePasswords(count=10)
         except ValueError as ve:
             print(ve)
