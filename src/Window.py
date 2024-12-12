@@ -59,5 +59,7 @@ class Window:
             for pwd in passwords:
                 self.m_TextArea.insert(tk.END, f"Generated Password: {pwd}\n")
 
+            generator.SavePasswordsToFile(passwords)
+
         except ValueError as ve:
             messagebox.showerror("Error", str(ve))
