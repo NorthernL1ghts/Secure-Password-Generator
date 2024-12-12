@@ -7,6 +7,16 @@ from secrets import SystemRandom
 import tkinter as tk
 from tkinter import messagebox, scrolledtext
 
+class Validation:
+    @staticmethod
+    def ValidateLength(length):
+        if not 12 <= length <= 25:
+            raise ValueError("Password length must be between 12 and 25 characters.")
+
+    @staticmethod
+    def HasRepeatingCharacters(password):
+        return re.search(r'(.)\1', password)
+
 class SecurePasswordGenerator:
     def __init__(self, length=16, min_uppercase=1, min_lowercase=1, min_digits=1, min_special=1, exclude_similar_chars=True, include_chars="", exclude_chars=""):
         self.m_Length = length
@@ -18,12 +28,12 @@ class SecurePasswordGenerator:
         self.m_IncludeChars = include_chars
         self.m_ExcludeChars = exclude_chars
         self.m_SecureRandom = SystemRandom()
+        self.m_Validator = Validation()
 
     def GeneratePassword(self):
         """Generate a random secure password with specific rules."""
 
-        if not 12 <= self.m_Length <= 25:
-            raise ValueError("Password length must be between 12 and 25 characters.")
+        self.m_Validator.ValidateLength(self.m_Length)
 
         # Define character sets
         letters_upper = string.ascii_uppercase
@@ -66,7 +76,7 @@ class SecurePasswordGenerator:
         password_str = ''.join(password)
 
         # Ensure no repeating characters next to each other
-        if re.search(r'(.)\1', password_str):
+        if self.m_Validator.HasRepeatingCharacters(password_str):
             return self.GeneratePassword()
 
         return password_str
