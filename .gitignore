@@ -1,0 +1,16 @@
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore Python cache and compiled files
+__pycache__/
+*.py[cod]
+
+# Ignore build directories and eggs
+bin/
+bin-int/
+build/
+*.egg-info/
+*.egg
+
+# Ignore logs
+*.log
