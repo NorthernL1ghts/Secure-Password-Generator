@@ -2,6 +2,7 @@ import string
 import random
 import re
 import os
+import time
 from secrets import SystemRandom
 
 class SecurePasswordGenerator:
@@ -42,6 +43,13 @@ class SecurePasswordGenerator:
 
         # Fill the remaining length with random choices from the char_set
         remaining_length = self.m_Length - len(password)
+
+        # Add more entropy by seeding with the current time and random OS data
+        seed = int(time.time() * 1000)
+        seed ^= os.getpid()
+        seed ^= random.randint(0, 2**32)
+        self.m_SecureRandom.seed(seed)
+
         password += [self.m_SecureRandom.choice(char_set) for _ in range(remaining_length)]
 
         # Shuffle the password list to ensure random distribution
