@@ -90,9 +90,20 @@ class SecurePasswordGenerator:
 class EntryPoint:
     @staticmethod
     def Run():
-        """Run the password generator."""
+        """Run the password generator with user input."""
         try:
-            generator = SecurePasswordGenerator(length=16, include_chars="!@#", exclude_chars="abc")
+            length = int(input("Enter the desired password length (12-25): "))
+            include_special_chars = input("Include special characters? (yes/no): ").strip().lower() == "yes"
+            exclude_similar_chars = input("Exclude similar-looking characters? (yes/no): ").strip().lower() == "yes"
+            include_chars = input("Enter any specific characters to include (or leave blank): ").strip()
+            exclude_chars = input("Enter any specific characters to exclude (or leave blank): ").strip()
+
+            generator = SecurePasswordGenerator(
+                length=length,
+                exclude_similar_chars=exclude_similar_chars,
+                include_chars=include_chars,
+                exclude_chars=exclude_chars
+            )
             generator.GenerateMultiplePasswords(count=10)
         except ValueError as ve:
             print(ve)
