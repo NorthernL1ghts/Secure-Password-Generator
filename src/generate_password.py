@@ -43,11 +43,13 @@ class SecurePasswordGenerator:
         similar_chars = '0O1l'
 
         # Combine character sets based on user preferences
-        char_set = letters_upper + letters_lower + digits + special_chars
-        if self.b_ExcludeSimilarChars:
-            char_set = ''.join(char for char in char_set if char not in similar_chars)
+        char_set = letters_upper + letters_lower + digits
         if self.m_IncludeChars:
             char_set += self.m_IncludeChars
+        if not self.m_IncludeChars and not self.m_ExcludeChars:
+            char_set += special_chars
+        if self.b_ExcludeSimilarChars:
+            char_set = ''.join(char for char in char_set if char not in similar_chars)
         if self.m_ExcludeChars:
             char_set = ''.join(char for char in char_set if char not in self.m_ExcludeChars)
 
@@ -55,9 +57,10 @@ class SecurePasswordGenerator:
         password = (
             [self.m_SecureRandom.choice(letters_upper) for _ in range(self.m_MinUppercase)] +
             [self.m_SecureRandom.choice(letters_lower) for _ in range(self.m_MinLowercase)] +
-            [self.m_SecureRandom.choice(digits) for _ in range(self.m_MinDigits)] +
-            [self.m_SecureRandom.choice(special_chars) for _ in range(self.m_MinSpecial)]
+            [self.m_SecureRandom.choice(digits) for _ in range(self.m_MinDigits)]
         )
+        if self.m_IncludeChars:
+            password += [self.m_SecureRandom.choice(self.m_IncludeChars) for _ in range(self.m_MinSpecial)]
 
         # Fill the remaining length with random choices from the char_set
         remaining_length = self.m_Length - len(password)
