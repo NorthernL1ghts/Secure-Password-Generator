@@ -74,7 +74,7 @@ class SecurePasswordGenerator:
                 file.write(f"Generated Password: {password}\n")
         print(f"Passwords saved to {filepath}")
 
-    def GenerateMultiplePasswords(self, count=1):
+    def GenerateMultiplePasswords(self, count=10):
         """Generate multiple passwords and save them to a file."""
         passwords = [self.GeneratePassword() for _ in range(count)]
         for pwd in passwords:
@@ -87,8 +87,7 @@ class EntryPoint:
         """Run the password generator."""
         try:
             generator = SecurePasswordGenerator(length=16)
-            print(f"Generated Password: {generator.GeneratePassword()}")
-            generator.GenerateMultiplePasswords(count=5)
+            generator.GenerateMultiplePasswords(count=10)
         except ValueError as ve:
             print(ve)
 
