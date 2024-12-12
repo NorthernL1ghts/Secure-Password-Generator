@@ -4,6 +4,8 @@ import re
 import os
 import time
 from secrets import SystemRandom
+import tkinter as tk
+from tkinter import messagebox, scrolledtext
 
 class SecurePasswordGenerator:
     def __init__(self, length=16, min_uppercase=1, min_lowercase=1, min_digits=1, min_special=1, exclude_similar_chars=True, include_chars="", exclude_chars=""):
@@ -83,30 +85,65 @@ class SecurePasswordGenerator:
     def GenerateMultiplePasswords(self, count=10):
         """Generate multiple passwords and save them to a file."""
         passwords = [self.GeneratePassword() for _ in range(count)]
-        for pwd in passwords:
-            print(f"Generated Password: {pwd}")
-        self.SavePasswordsToFile(passwords)
+        return passwords
 
 class EntryPoint:
     @staticmethod
     def Run():
-        """Run the password generator with user input."""
-        try:
-            length = int(input("Enter the desired password length (12-25): "))
-            include_special_chars = input("Include special characters? (yes/no): ").strip().lower() == "yes"
-            exclude_similar_chars = input("Exclude similar-looking characters? (yes/no): ").strip().lower() == "yes"
-            include_chars = input("Enter any specific characters to include (or leave blank): ").strip()
-            exclude_chars = input("Enter any specific characters to exclude (or leave blank): ").strip()
+        """Run the password generator with GUI."""
+        def generate_passwords():
+            try:
+                length = int(entry_length.get())
+                include_special_chars = var_include_special.get()
+                exclude_similar_chars = var_exclude_similar.get()
+                include_chars = entry_include_chars.get().strip()
+                exclude_chars = entry_exclude_chars.get().strip()
 
-            generator = SecurePasswordGenerator(
-                length=length,
-                exclude_similar_chars=exclude_similar_chars,
-                include_chars=include_chars,
-                exclude_chars=exclude_chars
-            )
-            generator.GenerateMultiplePasswords(count=10)
-        except ValueError as ve:
-            print(ve)
+                generator = SecurePasswordGenerator(
+                    length=length,
+                    exclude_similar_chars=exclude_similar_chars,
+                    include_chars=include_chars,
+                    exclude_chars=exclude_chars
+                )
+                passwords = generator.GenerateMultiplePasswords(count=10)
+                text_area.delete(1.0, tk.END)
+                for pwd in passwords:
+                    text_area.insert(tk.END, f"Generated Password: {pwd}\n")
+
+            except ValueError as ve:
+                messagebox.showerror("Error", str(ve))
+
+        # Create the main window
+        root = tk.Tk()
+        root.title("Secure Password Generator")
+        root.geometry("600x400")  # Set the window size to be wider
+
+        # Create and place widgets
+        tk.Label(root, text="Password Length (12-25):").grid(row=0, column=0, padx=10, pady=5)
+        entry_length = tk.Entry(root)
+        entry_length.grid(row=0, column=1, padx=10, pady=5)
+
+        var_include_special = tk.BooleanVar(value=True)
+        tk.Checkbutton(root, text="Include Special Characters", variable=var_include_special).grid(row=1, column=0, columnspan=2, padx=10, pady=5)
+
+        var_exclude_similar = tk.BooleanVar(value=True)
+        tk.Checkbutton(root, text="Exclude Similar-looking Characters", variable=var_exclude_similar).grid(row=2, column=0, columnspan=2, padx=10, pady=5)
+
+        tk.Label(root, text="Specific Characters to Include (leave blank if none):").grid(row=3, column=0, padx=10, pady=5)
+        entry_include_chars = tk.Entry(root)
+        entry_include_chars.grid(row=3, column=1, padx=10, pady=5)
+
+        tk.Label(root, text="Specific Characters to Exclude (leave blank if none):").grid(row=4, column=0, padx=10, pady=5)
+        entry_exclude_chars = tk.Entry(root)
+        entry_exclude_chars.grid(row=4, column=1, padx=10, pady=5)
+
+        tk.Button(root, text="Generate Passwords", command=generate_passwords).grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+
+        text_area = scrolledtext.ScrolledText(root, width=60, height=20)
+        text_area.grid(row=6, column=0, columnspan=2, padx=10, pady=10)
+
+        # Start the GUI event loop
+        root.mainloop()
 
 if __name__ == "__main__":
     EntryPoint.Run()
