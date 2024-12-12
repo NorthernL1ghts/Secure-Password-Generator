@@ -10,8 +10,8 @@ secure_random = SystemRandom()
 def generate_password(length=16, min_uppercase=1, min_lowercase=1, min_digits=1, min_special=1, exclude_similar_chars=True):
     """Generate a random secure password with specific rules."""
 
-    if not 8 < length < 25:
-        raise ValueError("Password length must be more than 8 and less than 25 characters.")
+    if not 12 <= length <= 25:
+        raise ValueError("Password length must be between 12 and 25 characters.")
 
     # Define character sets
     letters_upper = string.ascii_uppercase
